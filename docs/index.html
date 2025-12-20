@@ -217,42 +217,6 @@
             <tbody id="sim-table"></tbody>
           </table>
         </div>
-        <div class="sim-actions">
-          <button id="sim-download" class="btn ghost">Download CSV</button>
-        </div>
-        <div class="sim-charts">
-          <div class="chart-card">
-            <h3>Avg Steps to First</h3>
-            <canvas id="chart-steps" width="520" height="220"></canvas>
-          </div>
-          <div class="chart-card">
-            <h3>Success Rate</h3>
-            <canvas id="chart-success" width="520" height="220"></canvas>
-          </div>
-        </div>
-        <div class="sim-visual">
-          <div class="visual-head">
-            <div>
-              <h3>Live agent animation</h3>
-              <p>Preview a single strategy in motion. This is a lightweight visual, not the full leaderboard.</p>
-            </div>
-            <div class="visual-controls">
-              <label>
-                Strategy
-                <select id="anim-strategy">
-                  <option value="random_walk">Random Walk</option>
-                  <option value="levy_flight">Levy Flight</option>
-                  <option value="gradient_ascent">Gradient Ascent</option>
-                  <option value="surge_cast" selected>Surge-Cast</option>
-                  <option value="swarm_stigmergy">Swarm Stigmergy</option>
-                </select>
-              </label>
-              <button id="anim-start" class="btn">Start animation</button>
-              <button id="anim-stop" class="btn ghost">Stop</button>
-            </div>
-          </div>
-          <canvas id="sim-canvas" width="720" height="360"></canvas>
-        </div>
         <div class="code-card">
           <pre><code>cd sim
 python -m venv .venv

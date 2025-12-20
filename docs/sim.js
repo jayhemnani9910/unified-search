@@ -505,165 +505,12 @@ function renderResults(results) {
   });
 }
 
-function renderCharts(results) {
-  const stepsCanvas = document.getElementById("chart-steps");
-  const successCanvas = document.getElementById("chart-success");
-  if (!stepsCanvas || !successCanvas) return;
-
-  const labels = Object.keys(results).map((key) => STRATEGY_LABELS[key]);
-  const stepsValues = Object.keys(results).map((key) => results[key].avgStepsToFirst);
-  const successValues = Object.keys(results).map((key) => results[key].successRate * 100);
-
-  drawBarChart(stepsCanvas, labels, stepsValues, "#3b6c8f", "Steps");
-  drawBarChart(successCanvas, labels, successValues, "#e0764b", "%");
-}
-
-function drawBarChart(canvas, labels, values, color, unit) {
-  const ctx = canvas.getContext("2d");
-  const width = canvas.width;
-  const height = canvas.height;
-  ctx.clearRect(0, 0, width, height);
-
-  const padding = 36;
-  const chartWidth = width - padding * 2;
-  const chartHeight = height - padding * 2;
-  const maxValue = Math.max(...values, 1);
-  const barWidth = chartWidth / values.length - 10;
-
-  ctx.fillStyle = "#efe4d2";
-  ctx.fillRect(0, 0, width, height);
-
-  ctx.strokeStyle = "#d8c9b2";
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(padding, height - padding);
-  ctx.lineTo(width - padding, height - padding);
-  ctx.stroke();
-
-  values.forEach((value, idx) => {
-    const x = padding + idx * (barWidth + 10);
-    const barHeight = (value / maxValue) * chartHeight;
-    const y = height - padding - barHeight;
-
-    ctx.fillStyle = color;
-    ctx.fillRect(x, y, barWidth, barHeight);
-
-    ctx.fillStyle = "#1f2420";
-    ctx.font = "11px IBM Plex Sans, sans-serif";
-    ctx.fillText(Math.round(value).toString(), x, y - 6);
-
-    const label = labels[idx].split(" ")[0];
-    ctx.fillStyle = "#3a3f3b";
-    ctx.fillText(label, x, height - padding + 16);
-  });
-
-  ctx.fillStyle = "#3a3f3b";
-  ctx.font = "11px IBM Plex Sans, sans-serif";
-  ctx.fillText(unit, width - padding + 6, padding + 6);
-}
-
-function buildCsv(results) {
-  const header = ["Strategy", "AvgStepsToFirst", "AvgStepsToAll", "SuccessRate", "AvgEnergy"];
-  const rows = [header.join(",")];
-
-  Object.keys(results).forEach((key) => {
-    const res = results[key];
-    rows.push([
-      STRATEGY_LABELS[key],
-      res.avgStepsToFirst.toFixed(1),
-      res.avgStepsToAll.toFixed(1),
-      res.successRate.toFixed(2),
-      res.avgEnergy.toFixed(1),
-    ].join(","));
-  });
-
-  return rows.join("\n");
-}
-
-function initAnimation() {
-  const canvas = document.getElementById("sim-canvas");
-  const startBtn = document.getElementById("anim-start");
-  const stopBtn = document.getElementById("anim-stop");
-  const strategySelect = document.getElementById("anim-strategy");
-
-  if (!canvas || !startBtn || !stopBtn || !strategySelect) return;
-
-  let animFrame = null;
-  let env = null;
-  let agents = null;
-  let cfg = null;
-  let rngSeed = Date.now();
-
-  const ctx = canvas.getContext("2d");
-
-  function resetSimulation(strategyKey) {
-    rngSeed += 1234;
-    const rng = createRNG(rngSeed);
-    cfg = buildConfig({ trials: 1, plume: "turbulent", speed: "fast" });
-    env = new Environment(cfg, rng);
-    agents = Array.from({ length: cfg.numAgents }, (_, i) => new Agent(i, env, strategyKey, cfg, rng));
-  }
-
-  function draw() {
-    if (!env || !agents) return;
-    env.step();
-    agents.forEach((agent) => agent.step(agents));
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "#1c2a30";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    const scaleX = canvas.width / env.size;
-    const scaleY = canvas.height / env.size;
-
-    if (env.puffs && env.puffs.length) {
-      ctx.fillStyle = "rgba(224,118,75,0.15)";
-      env.puffs.slice(0, 50).forEach((puff) => {
-        ctx.beginPath();
-        ctx.arc(puff.pos[0] * scaleX, puff.pos[1] * scaleY, 12, 0, Math.PI * 2);
-        ctx.fill();
-      });
-    }
-
-    ctx.fillStyle = "#f5d1a0";
-    env.targets.forEach((t) => {
-      ctx.beginPath();
-      ctx.arc(t[0] * scaleX, t[1] * scaleY, 4, 0, Math.PI * 2);
-      ctx.fill();
-    });
-
-    agents.forEach((agent) => {
-      ctx.fillStyle = "#7db1c7";
-      ctx.beginPath();
-      ctx.arc(agent.pos[0] * scaleX, agent.pos[1] * scaleY, 2.5, 0, Math.PI * 2);
-      ctx.fill();
-    });
-
-    animFrame = requestAnimationFrame(draw);
-  }
-
-  startBtn.addEventListener("click", () => {
-    if (animFrame) cancelAnimationFrame(animFrame);
-    const strategyKey = strategySelect.value;
-    resetSimulation(strategyKey);
-    draw();
-  });
-
-  stopBtn.addEventListener("click", () => {
-    if (animFrame) {
-      cancelAnimationFrame(animFrame);
-      animFrame = null;
-    }
-  });
-}
-
 function initSimulator() {
   const runButton = document.getElementById("sim-run");
   const trialsInput = document.getElementById("sim-trials");
   const plumeSelect = document.getElementById("sim-plume");
   const speedSelect = document.getElementById("sim-speed");
   const statusEl = document.getElementById("sim-status");
-  const downloadBtn = document.getElementById("sim-download");
 
   if (!runButton) return;
 
@@ -677,27 +524,10 @@ function initSimulator() {
 
     const results = await runLeaderboard({ trials, plume, speed }, statusEl);
     renderResults(results);
-    renderCharts(results);
 
     statusEl.textContent = "Complete.";
     runButton.disabled = false;
-
-    if (downloadBtn) {
-      downloadBtn.onclick = () => {
-        const csv = buildCsv(results);
-        const blob = new Blob([csv], { type: "text/csv" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `digital-lab-results-${Date.now()}.csv`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      };
-    }
   });
 }
 
 initSimulator();
-initAnimation();
