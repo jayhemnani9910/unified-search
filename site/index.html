@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Unified Theory of Autonomous Search</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="noise"></div>
+  <header class="hero">
+    <div class="hero-content" data-reveal>
+      <p class="eyebrow">Unified Theory of Autonomous Search</p>
+      <h1>From biological heuristics to entropic laws in sparse target detection.</h1>
+      <p class="lead">
+        A compact whitepaper + simulator that distills autonomous search into a single switching law.
+        Built around a "Digital Lab" that compares strategies under noise, turbulence, and scarcity.
+      </p>
+      <div class="hero-actions">
+        <a class="btn" href="#digital-lab">Explore the Digital Lab</a>
+        <a class="btn ghost" href="#references">Sources</a>
+      </div>
+      <div class="hero-metrics">
+        <div>
+          <span class="metric">5</span>
+          <span class="metric-label">Strategy families</span>
+        </div>
+        <div>
+          <span class="metric">2</span>
+          <span class="metric-label">Signal regimes</span>
+        </div>
+        <div>
+          <span class="metric">4</span>
+          <span class="metric-label">Core metrics</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-graphic" data-reveal>
+      <svg viewBox="0 0 420 420" role="img" aria-label="Signal field illustration">
+        <defs>
+          <radialGradient id="pulse" cx="50%" cy="45%" r="60%">
+            <stop offset="0%" stop-color="#f8b57b" />
+            <stop offset="50%" stop-color="#e0764b" />
+            <stop offset="100%" stop-color="#1f2b2f" />
+          </radialGradient>
+        </defs>
+        <rect width="420" height="420" rx="36" fill="#1f2b2f" />
+        <circle cx="130" cy="120" r="120" fill="url(#pulse)" opacity="0.7" />
+        <circle cx="290" cy="250" r="100" fill="#3f6a8a" opacity="0.45" />
+        <path d="M40 300 C120 240, 240 340, 360 220" stroke="#f5d1a0" stroke-width="3" fill="none" opacity="0.7" />
+        <circle cx="300" cy="110" r="6" fill="#f5d1a0" />
+        <circle cx="95" cy="280" r="6" fill="#f5d1a0" />
+        <circle cx="210" cy="210" r="8" fill="#ffdfc2" />
+      </svg>
+      <div class="legend">
+        <span>Targets</span>
+        <span>Signal puffs</span>
+        <span>Search paths</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" id="digital-lab">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">Digital Lab</p>
+        <h2>The simulation arena that tests every rule under identical friction.</h2>
+        <p>
+          The Digital Lab models a bounded 2D world with noise, turbulence, and energy costs. Each agent is
+          intentionally "dumb" and must decide using only local sensing and limited state.
+        </p>
+      </div>
+      <div class="grid" data-reveal>
+        <div class="card">
+          <h3>Environment</h3>
+          <ul>
+            <li>Static inverse-square field or intermittent plume puffs.</li>
+            <li>Wind advection + diffusion for turbulent regimes.</li>
+            <li>Sensor noise and optional boundary conditions.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Agents</h3>
+          <ul>
+            <li>Energy-limited motion with sensing costs.</li>
+            <li>Local sensing radius and neighbor awareness.</li>
+            <li>Finite-state controllers for intermittent search.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Metrics</h3>
+          <ul>
+            <li>Time to first find, time to all targets.</li>
+            <li>Energy per target, success rate.</li>
+            <li>Variance across Monte Carlo trials.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="rule-families">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">Rule Families</p>
+        <h2>Four behavioral regimes, one switching logic.</h2>
+      </div>
+      <div class="split" data-reveal>
+        <div class="stack">
+          <div class="pill">Blind Search</div>
+          <h3>Random walk vs. Levy flight</h3>
+          <p>
+            Brownian motion oversamples local space in sparse domains. Levy steps inject rare, long jumps that
+            break recurrence, but only help in specific density regimes.
+          </p>
+          <div class="pill">Intermittent Search</div>
+          <h3>Relocation + detection phases</h3>
+          <p>
+            Fast, blind relocation alternates with slow, high-sensitivity detection. The switching ratio is the
+            main control variable.
+          </p>
+        </div>
+        <div class="stack">
+          <div class="pill">Signal Navigation</div>
+          <h3>Infotaxis vs. surge-cast</h3>
+          <p>
+            Infotaxis moves by information gain; surge-cast approximates it with a two-state controller driven by
+            odor hits and wind direction.
+          </p>
+          <div class="pill">Swarm Coordination</div>
+          <h3>Stigmergy + quorum</h3>
+          <p>
+            Indirect pheromone memory expands coverage, while quorum thresholds stabilize lock-in when a target is
+            confirmed.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="law-of-search">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">Law of Search</p>
+        <h2>The switching boundary between exploration and exploitation.</h2>
+        <p>
+          When information gain per unit energy crosses a threshold, behavior flips from coverage to capture.
+        </p>
+      </div>
+      <div class="law" data-reveal>
+        <div class="law-panel">
+          <h3>Confidence Ratio</h3>
+          <pre>chi = (signal / noise) * (1 / rho_est) * energy</pre>
+          <p>
+            Low chi means low information density. High chi means strong evidence and nearby targets.
+          </p>
+        </div>
+        <div class="law-diagram">
+          <svg viewBox="0 0 420 240" role="img" aria-label="Exploration exploitation phase map">
+            <defs>
+              <linearGradient id="phase" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#294050" />
+                <stop offset="55%" stop-color="#3d6b73" />
+                <stop offset="100%" stop-color="#e0764b" />
+              </linearGradient>
+            </defs>
+            <rect x="20" y="70" width="380" height="60" rx="20" fill="url(#phase)" />
+            <circle cx="230" cy="100" r="12" fill="#f5d1a0" />
+            <text x="60" y="160" fill="#f5e7d5" font-size="14">Explore</text>
+            <text x="300" y="160" fill="#f5e7d5" font-size="14">Exploit</text>
+            <text x="190" y="40" fill="#f5e7d5" font-size="12">Tipping point</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="simulator">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">Simulator</p>
+        <h2>Run the leaderboard in your browser.</h2>
+        <p>
+          The in-browser Digital Lab runs a fast, simplified version of the simulator so you can compare strategies
+          directly on GitHub Pages. For full fidelity and plots, use the Python version in <span>sim/</span>.
+        </p>
+      </div>
+      <div class="sim-panel" data-reveal>
+        <div class="sim-controls">
+          <label>
+            Trials
+            <input id="sim-trials" type="number" min="1" max="30" value="8" />
+          </label>
+          <label>
+            Plume mode
+            <select id="sim-plume">
+              <option value="static">Static</option>
+              <option value="turbulent">Turbulent</option>
+            </select>
+          </label>
+          <label>
+            Speed
+            <select id="sim-speed">
+              <option value="fast">Fast</option>
+              <option value="balanced" selected>Balanced</option>
+              <option value="quality">Quality</option>
+            </select>
+          </label>
+          <button id="sim-run" class="btn">Run simulation</button>
+        </div>
+        <div class="sim-status" id="sim-status">Ready.</div>
+        <div class="sim-results">
+          <table>
+            <thead>
+              <tr>
+                <th>Strategy</th>
+                <th>Steps to First</th>
+                <th>Steps to All</th>
+                <th>Success Rate</th>
+                <th>Energy</th>
+              </tr>
+            </thead>
+            <tbody id="sim-table"></tbody>
+          </table>
+        </div>
+        <div class="code-card">
+          <pre><code>cd sim
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python run_leaderboard.py --trials 20 --plume turbulent --save-plots</code></pre>
+          <p class="caption">Full plots and higher-fidelity runs in <span>sim/figures/</span>.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="references">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">References</p>
+        <h2>Key sources behind the unified theory.</h2>
+      </div>
+      <ol class="refs" data-reveal>
+        <li>Vergassola, Villermaux, Shraiman. Infotaxis as a strategy for searching without gradients. Nature (2007). DOI: 10.1038/nature05464.</li>
+        <li>Benichou et al. Intermittent search strategies. Rev Mod Phys (2011). DOI: 10.1103/RevModPhys.83.81.</li>
+        <li>Lomholt et al. Levy strategies in intermittent search processes are advantageous. PNAS (2008). DOI: 10.1073/pnas.0803117105.</li>
+        <li>Palyulin, Chechkin, Metzler. Levy flights do not always optimize random blind search for sparse targets. PNAS (2014). DOI: 10.1073/pnas.1320424111.</li>
+        <li>Weisstein. Polya's Random Walk Constants. MathWorld.</li>
+        <li>Wechsler, Bhandawat. Odor-modulated locomotion in insects. J Exp Biol (2023). DOI: 10.1242/jeb.200261.</li>
+        <li>Verano, Panizon, Celani. Olfactory search with finite-state controllers. PNAS (2023). DOI: 10.1073/pnas.2304230120.</li>
+        <li>Heylighen. Stigmergy as a universal coordination mechanism I. Cognitive Systems Research (2016). DOI: 10.1016/j.cogsys.2015.12.002.</li>
+        <li>Kennedy, Eberhart. Particle swarm optimization. Proc. IEEE ICNN (1995). DOI: 10.1109/ICNN.1995.488968.</li>
+        <li>Scheidler et al. The k-unanimity rule for self-organized decision-making in swarms of robots. IEEE Trans Cybernetics (2016). DOI: 10.1109/TCYB.2015.2429118.</li>
+      </ol>
+      <p class="note">Full citations and context are in the whitepaper.</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Unified Search Project · Digital Lab + Whitepaper</p>
+  </footer>
+
+  <script src="app.js"></script>
+  <script src="sim.js"></script>
+</body>
+</html>
