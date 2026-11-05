@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  simulator:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -r sim/requirements.txt ruff
+      - name: Lint
+        run: ruff check .
+      - name: Smoke run (1 trial, plots)
+        working-directory: sim
+        run: |
+          python run_leaderboard.py --trials 1 --save-plots --outdir "$RUNNER_TEMP/figures"
+          test -s "$RUNNER_TEMP/figures/avg_steps_to_first.png"
+          test -s "$RUNNER_TEMP/figures/success_rate.png"
+
+  site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: JS syntax
+        run: for f in docs/*.js site/*.js; do node --check "$f"; done
+      - name: site/ matches docs/
+        run: diff -r -x demo.gif docs site
