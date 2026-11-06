@@ -4,7 +4,6 @@ import argparse
 from pathlib import Path
 
 import matplotlib.pyplot as plt
-
 from digital_lab import Config, Strategy, leaderboard
 
 

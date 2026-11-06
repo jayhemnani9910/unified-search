@@ -5,12 +5,10 @@ This module defines the environment, agent behaviors, and trial runner.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from enum import Enum
-from typing import List, Tuple, Dict
-
 import math
 import random
+from dataclasses import dataclass
+from enum import Enum
 
 import numpy as np
 
@@ -68,7 +66,7 @@ class Config:
     neighbor_radius: float = 6.0
 
     # Plume / wind
-    wind: Tuple[float, float] = (1.0, 0.0)
+    wind: tuple[float, float] = (1.0, 0.0)
     plume_mode: str = "static"  # or "turbulent"
     puff_rate: float = 0.25
     puff_lifetime: int = 80
@@ -92,10 +90,10 @@ class Environment:
         self.targets = self._init_targets(cfg.num_targets)
         self.signal_field = np.zeros((self.size, self.size), dtype=float)
         self.pheromone_field = np.zeros((self.size, self.size), dtype=float)
-        self.puffs: List[Dict[str, float]] = []
+        self.puffs: list[dict[str, float]] = []
         self._update_static_field()
 
-    def _init_targets(self, count: int) -> List[np.ndarray]:
+    def _init_targets(self, count: int) -> list[np.ndarray]:
         targets = []
         for _ in range(count):
             targets.append(
@@ -207,7 +205,7 @@ class Agent:
         self.energy -= self.cfg.sense_cost
         return self.env.get_signal(self.pos)
 
-    def step(self, agents: List["Agent"]) -> None:
+    def step(self, agents: list[Agent]) -> None:
         if self.energy <= 0:
             return
 
@@ -271,7 +269,7 @@ class Agent:
         self.mode = "EXPLORE"
         self._levy_flight()
 
-    def _swarm_stigmergy(self, signal: float, agents: List["Agent"]) -> None:
+    def _swarm_stigmergy(self, signal: float, agents: list[Agent]) -> None:
         self.env.add_pheromone(self.pos)
 
         grad = self._estimate_gradient()
@@ -368,8 +366,8 @@ def run_trial(strategy: Strategy, cfg: Config, seed: int | None = None) -> Trial
     )
 
 
-def leaderboard(strategies: List[Strategy], cfg: Config, trials: int = 10) -> Dict[str, Dict[str, float]]:
-    results: Dict[str, Dict[str, float]] = {}
+def leaderboard(strategies: list[Strategy], cfg: Config, trials: int = 10) -> dict[str, dict[str, float]]:
+    results: dict[str, dict[str, float]] = {}
 
     for strategy in strategies:
         totals = {
