@@ -1,6 +1,7 @@
 """Run leaderboard experiments for the Digital Lab."""
 
 import argparse
+import csv
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -13,6 +14,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--plume", choices=["static", "turbulent"], default="static")
     parser.add_argument("--save-plots", action="store_true")
     parser.add_argument("--outdir", type=str, default="figures")
+    parser.add_argument("--csv", type=str, default=None, help="Write results to a CSV file")
     return parser.parse_args()
 
 
@@ -41,6 +43,20 @@ def make_plots(results: dict, outdir: Path) -> None:
     plt.close(fig)
 
 
+def write_csv(results: dict, path: str) -> None:
+    with open(path, "w", newline="") as fh:
+        writer = csv.writer(fh)
+        writer.writerow(["Strategy", "AvgStepsToFirst", "AvgStepsToAll", "SuccessRate", "AvgEnergy"])
+        for name, metrics in results.items():
+            writer.writerow([
+                name,
+                f"{metrics['avg_steps_to_first']:.1f}",
+                f"{metrics['avg_steps_to_all']:.1f}",
+                f"{metrics['success_rate']:.2f}",
+                f"{metrics['avg_energy']:.1f}",
+            ])
+
+
 if __name__ == "__main__":
     args = parse_args()
 
@@ -63,6 +79,10 @@ if __name__ == "__main__":
             f"| success={metrics['success_rate']:.2f} "
             f"| energy={metrics['avg_energy']:.1f}"
         )
+
+    if args.csv:
+        write_csv(results, args.csv)
+        print(f"Results written to {args.csv}")
 
     if args.save_plots:
         outdir = Path(args.outdir)
