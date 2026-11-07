@@ -13,6 +13,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--plume", choices=["static", "turbulent"], default="static")
     parser.add_argument("--save-plots", action="store_true")
     parser.add_argument("--outdir", type=str, default="figures")
+    parser.add_argument("--seed", type=int, default=None, help="Seed for reproducible runs")
     return parser.parse_args()
 
 
@@ -53,7 +54,7 @@ if __name__ == "__main__":
         Strategy.SWARM_STIGMERGY,
     ]
 
-    results = leaderboard(strategies, cfg, trials=args.trials)
+    results = leaderboard(strategies, cfg, trials=args.trials, seed=args.seed)
 
     print("--- DIGITAL LAB LEADERBOARD ---")
     for name, metrics in results.items():
