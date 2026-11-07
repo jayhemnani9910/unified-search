@@ -366,7 +366,7 @@ def run_trial(strategy: Strategy, cfg: Config, seed: int | None = None) -> Trial
     )
 
 
-def leaderboard(strategies: list[Strategy], cfg: Config, trials: int = 10) -> dict[str, dict[str, float]]:
+def leaderboard(strategies: list[Strategy], cfg: Config, trials: int = 10, seed: int | None = None) -> dict[str, dict[str, float]]:
     results: dict[str, dict[str, float]] = {}
 
     for strategy in strategies:
@@ -377,7 +377,7 @@ def leaderboard(strategies: list[Strategy], cfg: Config, trials: int = 10) -> di
             "success": 0.0,
         }
         for t in range(trials):
-            res = run_trial(strategy, cfg, seed=None)
+            res = run_trial(strategy, cfg, seed=(seed + t if seed is not None else None))
             totals["steps_to_first"] += res.steps_to_first
             totals["steps_to_all"] += res.steps_to_all
             totals["energy"] += res.energy_used
